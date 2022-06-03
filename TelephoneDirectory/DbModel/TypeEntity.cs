@@ -2,7 +2,8 @@
 {
     public class TypeEntity:BaseEntity
     {
-        public string email { get; set; }
-        public string number { get; set; }
+        public string Email { get; set; }
+        public string Number { get; set; }
+        public virtual BaseEntity Base { get; set; }
     }
 }

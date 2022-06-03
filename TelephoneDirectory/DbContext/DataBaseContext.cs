@@ -20,8 +20,8 @@ namespace TelephoneDirectory.DbModel
         }
 
       
-        public DbSet<PersonEntities> Persons { get; set; } //Entities kısımları düzelt
-        public DbSet<DetailEntities>Details { get; set; }
+        public DbSet<Person> Persons { get; set; } 
+        public DbSet<Detail>Details { get; set; }
         public DbSet<TypeEntity>TypeEntities { get; set; }
 
 

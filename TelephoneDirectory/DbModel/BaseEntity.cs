@@ -3,8 +3,8 @@
     public class BaseEntity
     {
         public int Id { get; set; }
-        public DateTime creates_date { get; set; }
-        public DateTime updates_date { get; set; }
+        public DateTime Creates_date { get; set; }
+        public DateTime Updates_date { get; set; }
 
     }
 }
