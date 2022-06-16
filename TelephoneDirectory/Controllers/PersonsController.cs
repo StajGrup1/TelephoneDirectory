@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using TelephoneDirectory.DbModel;
 using TelephoneDirectory.Migrations;
-
+using TelephoneDirectory.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace TelephoneDirectory.Controllers
 {
@@ -9,64 +11,54 @@ namespace TelephoneDirectory.Controllers
     [Route("api/[controller]")]
     public class PersonsController : Controller
     {
-        private readonly DataBaseContext _db;
+        private readonly IGenericRepository _genericRepository;
 
-        public PersonsController(DataBaseContext db)
+        public PersonsController(IGenericRepository genericRepository)
         {
-            _db = db;
+            _genericRepository = genericRepository;
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IEnumerable<Person> Get()
         {
-            var Person = _db.Persons.ToList();
-            return Ok(Person);
+            return _genericRepository.GetPerson();
         }
 
-        [HttpGet("GetById")] // ıdye göre customer değeri döner. ıd yoksa hata döner
-        public IActionResult GetById(int id)
+        [HttpGet("GetById/{id}")]
+        public Person Details(int id)
         {
-            var Person = _db.Persons.FirstOrDefault(x => x.Id == id);
-            return Ok(Person);
+            return _genericRepository.GetPersonById(id);
         }
 
-        [HttpGet("GetByNation")]
-        public IActionResult GetGirl(int id)
-        {
-            var person = _db.Persons.Where(x => x.Id == id);
-            return Ok(person);
-        }
-
-        [HttpPost("Create")]
+        [HttpPost("CreatePerson")]
         public IActionResult Create([FromBody] Person person)
         {
-            _db.Persons.Add(person);
-            _db.SaveChanges();
-            return Ok(person);
+            _genericRepository.AddPerson(person);
+            return Ok("Başarılı");
         }
 
-        [HttpPut("Update")]
-        public IActionResult Update([FromBody] Person person)
+        [HttpPut("EditPerson")]
+        public IActionResult Edit([FromBody] Person person)
         {
-            _db.Persons.Update(person);
-            _db.SaveChanges();
-            return Ok(person);
+            _genericRepository.UpdatePerson(person);
+            return Ok("Değiştirildi");
+
         }
 
-        [HttpDelete("Delete")]
-        public virtual IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult DeleteConfirmed(int id)
         {
-            var personToDelete = _db.Persons.Find(id);
-            if (personToDelete == null) // getbyıd de olabilir
+            var data = _genericRepository.GetPersonById(id);
+            if (data == null)
             {
-                return NotFound("Bulunamadı");
+                return NotFound("Böyle bir kayıt yok");
             }
-            //customerToDelete.Is_active = false;
-            _db.Persons.Update(personToDelete);
-            _db.SaveChanges();
-            return NoContent();
+            _genericRepository.DeletePerson(id);
+            return Ok("Silindi");
         }
+
     }
 
 }
+
 
